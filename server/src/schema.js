@@ -5,7 +5,8 @@ const typeDefs = gql`
     _id: ID!
     username: String!
     password: String!
-    favorite: [Case] # 收藏
+    favorite: [Case!] # 收藏的用例列表
+    create: [Case!] # 创建的用例列表
     token: String! # auth
   }
 
@@ -28,20 +29,26 @@ const typeDefs = gql`
     test: String
   }
 
+  input getCasesInput {
+    userId: ID
+    favorite: Boolean
+    create: Boolean
+  }
+
   type Query {
     getUser(id: ID!): User
-    getCases: [Case]
-    #    getCaseById(id: ID!): Case
+    getCases(userId: ID): [Case!]!
+    loginUser(username: String!, password: String!): User
+    # getCaseById(id: ID!): Case
   }
 
   type Mutation {
-    loginUser(username: String!, password: String!): User!
-    registerUser(username: String!, password: String!): User!
+    registerUser(username: String!, password: String!): User
     deleteUser(id: ID!): Boolean!
 
-    createCase(input: CreateCaseInput): Case
+    createCase(input: CreateCaseInput, userId: ID!): Case
     updateCase(id: ID!, input: UpdateCaseInput!): Case!
-    deleteCase(id: ID!): ID!
+    deleteCase(id: ID!): ID
     favoriteCase(id: ID!): Boolean!
   }
 `

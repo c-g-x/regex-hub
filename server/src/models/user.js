@@ -3,10 +3,6 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const userSchema = new Schema({
-  id: {
-    type: String,
-    trim: true,
-  },
   username: {
     type: String,
     trim: true,
@@ -14,6 +10,8 @@ const userSchema = new Schema({
   password: {
     type: String,
   },
+  favorite: Array,
+  create: Array,
 })
 
 const User = mongoose.model('User', userSchema)
