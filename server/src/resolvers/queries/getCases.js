@@ -1,4 +1,6 @@
-module.exports = async (_, {}, { models }) => {
-  console.log(models)
-  return await models.CaseModel.find()
+module.exports = async (_, { userId }, { models }) => {
+  if (userId) {
+    models.UserCase.find()
+  }
+  return models.Case.find()
 }

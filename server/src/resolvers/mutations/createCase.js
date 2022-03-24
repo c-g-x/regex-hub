@@ -1,9 +1,17 @@
-module.exports = async (_, { input }, { models }) => {
-  let aCase = await models.Case.findOne({
-    re: input.re,
-  });
-  if (aCase) {
+module.exports = async (_, { input, userId }, { models }) => {
+  // let exist = !!(await models.Case.findOne({
+  //   re: input.re,
+  // }))
 
-  }
-  return await models.Case.create(input)
+  // if (exist) {
+  //   return null
+  // }
+
+  let newCase = await models.Case.create(input)
+  models.UserCase.create({
+    userId: userId,
+    caseId: newCase._id,
+    create: true,
+  })
+  return newCase
 }
