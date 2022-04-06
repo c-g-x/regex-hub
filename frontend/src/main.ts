@@ -1,10 +1,12 @@
 import { createApp, h } from 'vue'
+import './index.css'
 import App from './App.vue'
 import { ApolloClient, InMemoryCache } from '@apollo/client/core'
 import { createApolloProvider } from '@vue/apollo-option'
 // @ts-ignore
 import VueApolloComponents from '@vue/apollo-components'
 import router from './router'
+
 const cache = new InMemoryCache()
 
 const apolloClient = new ApolloClient({
