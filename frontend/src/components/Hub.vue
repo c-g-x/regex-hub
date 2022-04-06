@@ -21,6 +21,7 @@ import {
   NFormItem,
   NInput,
 } from 'naive-ui'
+import gql from 'graphql-tag'
 
 export default {
   name: 'index',
@@ -54,11 +55,19 @@ export default {
       showLoginModal: false,
       username: '',
       password: '',
+      getCases: [],
     }
   },
-  mounted() {
-    console.log(this.$apollo)
-    // console.log(this.$apollo.provider.defaultClient)
+  apollo: {
+    getCases: {
+      query: gql`
+        {
+          getCases {
+            _id
+          }
+        }
+      `,
+    },
   },
   methods: {
     login() {
@@ -85,6 +94,7 @@ export default {
           }
         `
     "
+    class="h-full"
   >
     <template v-slot="{ result: { data } }">
       <n-layout style="height: 100%">
