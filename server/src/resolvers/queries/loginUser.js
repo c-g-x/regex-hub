@@ -10,10 +10,13 @@ module.exports = async (_, { username, password }, { models }) => {
     })
   ).map(({ caseId }) => models.Case.findOne({ _id: caseId }))
 
-  let createUserCaseList = await models.UserCase.find({
+  let createUserCaseIdList = await models.UserCase.find({
     userId: user._id,
     create: true,
   })
-  user.create = await Promise.all(createUserCaseList.map(async ({ caseId }) => await models.Case.findOne({ _id: caseId })))
+
+  // user.create = createUserCaseIdList.map(async ({ caseId }) => await models.Case.findOne({ _id: caseId }))
+  const createUserCaseList = await Promise.all(createUserCaseIdList.map(async ({ caseId }) => await models.Case.findOne({ _id: caseId })))
+  user.create = createUserCaseList.filter((item) => item !== null)
   return user
 }
