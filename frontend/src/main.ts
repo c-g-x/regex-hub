@@ -1,21 +1,16 @@
-import { createApp, h } from 'vue'
-import './index.css'
-import App from './App.vue'
+import { createApp, provide, h } from 'vue'
+import { DefaultApolloClient } from '@vue/apollo-composable'
 import { ApolloClient, InMemoryCache } from '@apollo/client/core'
-import { createApolloProvider } from '@vue/apollo-option'
-// @ts-ignore
-import VueApolloComponents from '@vue/apollo-components'
+import App from './App.vue'
 import router from './router'
+import './index.css'
+import naive from 'naive-ui'
 
+// Vue Apollo
 const cache = new InMemoryCache()
-
 const apolloClient = new ApolloClient({
   cache,
   uri: 'http://localhost:4000/graphql',
-})
-
-const apolloProvider = createApolloProvider({
-  defaultClient: apolloClient,
 })
 
 // const app = createApp(App, {
@@ -23,17 +18,12 @@ const apolloProvider = createApolloProvider({
 // }).mount('#app')
 
 const app = createApp({
+  setup() {
+    provide(DefaultApolloClient, apolloClient)
+  },
+
   render: () => h(App),
 })
 
-// const app = createApp(App);
-app.use(apolloProvider)
-app.use(VueApolloComponents)
-app.use(router)
+app.use(router).use(naive)
 app.mount('#app')
-
-// new Vue({
-//   el:'#app',
-// apolloProvider,
-// render: () => h(App)
-// })
