@@ -8,7 +8,7 @@ const caseList = useResult(result, [])
 <template>
   <n-card>
     <template #header>
-      <!--          <n-h1>受欢迎的正则列表</n-h1>-->
+      <n-h1>受欢迎的正则列表</n-h1>
     </template>
     <n-grid x-gap="16" y-gap="16" cols="1 640:1 768:2 1024:3 1280:4">
       <n-grid-item v-for="caseItem in caseList">
