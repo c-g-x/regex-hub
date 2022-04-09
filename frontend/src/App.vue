@@ -83,7 +83,7 @@ const theme = ref(darkTheme)
       <n-layout-content class="p-6">
         <router-view />
       </n-layout-content>
-      <n-layout-footer class="p-2">Copyright @ 2022-nowadays ChenGuixin</n-layout-footer>
+      <n-layout-footer class="p-2">MIT License © 2022 ChenGuixin</n-layout-footer>
     </n-layout>
 
     <n-modal v-model:show="showLoginModal" style="width: 400px" preset="card">
