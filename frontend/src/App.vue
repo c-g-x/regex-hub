@@ -29,7 +29,6 @@ const theme = ref(darkTheme)
             <n-avatar src="/public/favicon.svg" />
           </template>
           <template #extra>
-
             <GithubCorner />
             <n-space class="mr-10">
               <n-button>关于</n-button>
