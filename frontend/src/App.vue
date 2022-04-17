@@ -11,6 +11,7 @@ const isLogin = ref(false)
 const showLoginModal = ref(false)
 const username = ref('')
 const password = ref('')
+const router = useRouter()
 
 function login() {
   // TODO: 1. check username and password
@@ -20,7 +21,7 @@ function login() {
 }
 
 function toIndex() {
-  console.log('toIndex')
+  router.push('/')
 }
 
 const theme = ref(darkTheme)
