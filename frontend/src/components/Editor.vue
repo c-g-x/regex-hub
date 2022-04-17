@@ -1,6 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import CodeMirrorEditor from './CodeMirrorEditor.vue'
-import { SIMPLE_CASES_QUERY } from '../types/query.ts'
+import { SIMPLE_CASES_QUERY } from '../types/query'
+// @ts-ignore
 import { parse, Kit, Raphael, visualize } from 'regulex_common'
 import FlagIcon from './icons/FlagIcon.vue'
 import RandExp from 'randexp'
@@ -25,15 +26,16 @@ const flagOptions = [
   },
 ]
 
-let paper = null
+let paper: Raphael = null
 
 onMounted(() => {
   paper = Raphael('regex-image', 0, 0)
 })
+
 /**
  * 可视化 regex expression
  */
-function visualizeRegex() {
+function visualizeRegex(): void {
   if (isValidRegex.value) {
     const regExp = new RegExp(regex.value, viewFlags.value)
     try {
@@ -46,7 +48,7 @@ function visualizeRegex() {
   }
 }
 
-function getRegexFlags(re) {
+function getRegexFlags(re: RegExp): string {
   let flags = ''
   flags += re.ignoreCase ? 'i' : ''
   flags += re.global ? 'g' : ''
@@ -54,15 +56,17 @@ function getRegexFlags(re) {
   return flags
 }
 
-function changeHeightLight() {
+function changeHeightLight(): void {
   visualizeRegex()
 }
 
+/**
+ * 视图中的 flags
+ */
 const viewFlags = computed(() => flags.value.join(''))
 
 /**
- * regex expression 是否合法
- * @type {ComputedRef<boolean>}
+ * 标记正则表达式是否合法
  */
 const isValidRegex = computed(() => {
   if (!regex.value || regex.value.length === 0) {
@@ -77,7 +81,10 @@ const isValidRegex = computed(() => {
   return true
 })
 
-const generateRandomExp = () => RandExp.randexp(regex)
+/**
+ * 随机生成正则表达式用例
+ */
+const generateRandomExp = () => RandExp.randexp(regex.value)
 </script>
 
 <template>
@@ -97,6 +104,7 @@ const generateRandomExp = () => RandExp.randexp(regex)
           </template>
         </n-input>
 
+        <div class="text-left mt-1 select-none">Test String</div>
         <CodeMirrorEditor />
 
         <div id="regex-image" v-show="isValidRegex"></div>
