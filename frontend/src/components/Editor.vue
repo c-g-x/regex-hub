@@ -81,10 +81,13 @@ const isValidRegex = computed(() => {
   return true
 })
 
+const randomExp = ref('')
+watch(regex, () => generateRandomExp())
+
 /**
  * 随机生成正则表达式用例
  */
-const generateRandomExp = () => RandExp.randexp(regex.value)
+const generateRandomExp = () => (randomExp.value = RandExp.randexp(regex.value))
 </script>
 
 <template>
@@ -113,7 +116,11 @@ const generateRandomExp = () => RandExp.randexp(regex.value)
     <n-gi>
       <n-space vertical>
         <n-card v-if="isValidRegex" title="匹配串生成器" class="bg-opacity-50" embedded>
-          {{ RandExp.randexp(regex) }}
+          <template #default>
+            <div class="overflow-auto">
+              {{ randomExp }}
+            </div>
+          </template>
           <template #action>
             <n-button @click="generateRandomExp" class="w-full text-white" type="success" strong secondary>重新生成</n-button>
           </template>
