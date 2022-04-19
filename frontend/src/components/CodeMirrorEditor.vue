@@ -4,39 +4,23 @@
 
 <script setup lang="ts">
 import { EditorState } from '@codemirror/state'
-import { EditorView, keymap, ViewPlugin, ViewUpdate } from '@codemirror/view'
+import { EditorView, keymap, ViewPlugin, ViewUpdate, highlightActiveLine } from '@codemirror/view'
 import { defaultKeymap } from '@codemirror/commands'
-import { lineNumbers } from '@codemirror/gutter'
+import { lineNumbers, highlightActiveLineGutter } from '@codemirror/gutter'
 import { Ref } from 'vue'
+import { HighlightStyle, defaultHighlightStyle, Tag } from '@codemirror/highlight'
+import DocSizePlugin from './codemirror/DocSizePlugin'
 
+const DarkHighlightStyle = HighlightStyle.define([], {
+  themeType: 'dark',
+})
+// DarkHighlightStyle.match(Tag.define(), null)
 const data: { view?: EditorView } = reactive({
   view: undefined,
 })
 
 // 暗色主题
 const darkTheme = EditorView.theme({}, { dark: true })
-
-// 显示文档大小插件
-const docSizePlugin = ViewPlugin.fromClass(
-  class {
-    private dom: any
-    constructor(view: EditorView) {
-      this.dom = view.dom.appendChild(document.createElement('div'))
-      this.dom.style.cssText = 'position: absolute; inset-block-end: 4px; inset-inline-end: 5px;'
-      this.dom.textContent = 'total: ' + view.state.doc.length
-    }
-
-    update(update: ViewUpdate) {
-      if (update.docChanged) {
-        this.dom.textContent = 'total: ' + update.state.doc.length
-      }
-    }
-
-    destroy() {
-      this.dom.remove()
-    }
-  }
-)
 
 // 监听 doc 变化的插件
 const domChangeUpdaterPlugin = ViewPlugin.fromClass(
@@ -55,7 +39,7 @@ const domChangeUpdaterPlugin = ViewPlugin.fromClass(
 // 创建编辑器初始状态
 const startState: EditorState = EditorState.create({
   doc: 'Hello World',
-  extensions: [keymap.of(defaultKeymap), lineNumbers(), domChangeUpdaterPlugin, darkTheme, docSizePlugin],
+  extensions: [keymap.of(defaultKeymap), lineNumbers(), highlightActiveLineGutter(), domChangeUpdaterPlugin, darkTheme, DocSizePlugin, highlightActiveLine(), defaultHighlightStyle],
 })
 
 const view: Ref = ref({})
