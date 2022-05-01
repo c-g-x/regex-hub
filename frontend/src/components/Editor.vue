@@ -6,6 +6,8 @@ import { parse, Kit, Raphael, visualize } from 'regulex_common'
 import FlagIcon from './icons/FlagIcon.vue'
 import RandExp from 'randexp'
 
+const codeMirrorEditorRef = ref()
+
 const { result } = useQuery(SIMPLE_CASES_QUERY)
 const caseList = useResult(result, [])
 
@@ -29,6 +31,7 @@ const flagOptions = [
 let paper: Raphael = null
 
 onMounted(() => {
+  // @ts-ignore
   paper = Raphael('regex-image', 0, 0)
 })
 
@@ -58,6 +61,8 @@ function getRegexFlags(re: RegExp): string {
 
 function changeHeightLight(): void {
   visualizeRegex()
+
+  codeMirrorEditorRef.value.updateHighlightRange()
 }
 
 /**
@@ -84,6 +89,14 @@ const isValidRegex = computed(() => {
 const randomExp = ref('')
 watch(regex, () => generateRandomExp())
 
+function matchFn() {
+  console.log(regex.value, viewFlags.value)
+}
+
+function docChanged() {
+  console.log('docChanged')
+}
+
 /**
  * 随机生成正则表达式用例
  */
@@ -94,7 +107,13 @@ const generateRandomExp = () => (randomExp.value = RandExp.randexp(regex.value))
   <n-grid cols="1 800:3" x-gap="16" y-gap="16" item-responsive>
     <n-gi span="1 800:2">
       <n-space vertical>
-        <n-input placeholder="请输入正则表达式" class="text-left" @input="changeHeightLight" maxlength="1000" v-model:value="regex">
+        <n-input
+          placeholder="请输入正则表达式"
+          class="text-left"
+          @input="changeHeightLight"
+          maxlength="1000"
+          v-model:value="regex"
+        >
           <template #prefix>/</template>
           <template #suffix>
             <span>/</span>
@@ -108,7 +127,7 @@ const generateRandomExp = () => (randomExp.value = RandExp.randexp(regex.value))
         </n-input>
 
         <div class="text-left mt-1 select-none">Test String</div>
-        <CodeMirrorEditor />
+        <CodeMirrorEditor ref="codeMirrorEditorRef" :matchFn="matchFn" @docChanged="docChanged" />
 
         <div id="regex-image" v-show="isValidRegex"></div>
       </n-space>
@@ -122,7 +141,9 @@ const generateRandomExp = () => (randomExp.value = RandExp.randexp(regex.value))
             </div>
           </template>
           <template #action>
-            <n-button @click="generateRandomExp" class="w-full text-white" type="success" strong secondary>重新生成</n-button>
+            <n-button @click="generateRandomExp" class="w-full text-white" type="success" strong secondary
+              >重新生成</n-button
+            >
           </template>
         </n-card>
 
