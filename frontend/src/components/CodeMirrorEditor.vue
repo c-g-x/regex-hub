@@ -1,15 +1,14 @@
-<template>
-  <div id="editor" class="editor-container" />
-</template>
-
 <script setup lang="ts">
 import { EditorState } from '@codemirror/state'
 import { EditorView, keymap, ViewPlugin, ViewUpdate, highlightActiveLine } from '@codemirror/view'
 import { defaultKeymap } from '@codemirror/commands'
 import { lineNumbers, highlightActiveLineGutter } from '@codemirror/gutter'
-import { Ref } from 'vue'
 import { HighlightStyle, defaultHighlightStyle, Tag } from '@codemirror/highlight'
 import DocSizePlugin from './codemirror/DocSizePlugin'
+import { UnderlineKeymapPlugin } from './codemirror/UnderlineSelection'
+
+const props = defineProps(['matchFn'])
+const emit = defineEmits(['docChanged'])
 
 const DarkHighlightStyle = HighlightStyle.define([], {
   themeType: 'dark',
@@ -31,6 +30,9 @@ const domChangeUpdaterPlugin = ViewPlugin.fromClass(
       const { docChanged, state } = update
       if (update.docChanged) {
         console.log(state)
+        emit('docChanged')
+        updateHighlightRange()
+        props.matchFn()
       }
     }
   }
@@ -39,17 +41,39 @@ const domChangeUpdaterPlugin = ViewPlugin.fromClass(
 // 创建编辑器初始状态
 const startState: EditorState = EditorState.create({
   doc: 'Hello World',
-  extensions: [keymap.of(defaultKeymap), lineNumbers(), highlightActiveLineGutter(), domChangeUpdaterPlugin, darkTheme, DocSizePlugin, highlightActiveLine(), defaultHighlightStyle],
+  extensions: [
+    keymap.of(defaultKeymap),
+    lineNumbers(),
+    highlightActiveLineGutter(),
+    domChangeUpdaterPlugin,
+    darkTheme,
+    DocSizePlugin,
+    highlightActiveLine(),
+    defaultHighlightStyle,
+    UnderlineKeymapPlugin,
+  ],
 })
 
-const view: Ref = ref({})
 onMounted(() => {
   data.view = new EditorView({
     state: startState,
     parent: document.querySelector('#editor') as Element,
   })
 })
+
+function updateHighlightRange() {
+  console.log('updateHighlightRange')
+  // data.view.dispatch()
+}
+
+defineExpose({
+  updateHighlightRange
+})
 </script>
+
+<template>
+  <div id="editor" class="editor-container" />
+</template>
 
 <style>
 .editor-container {
