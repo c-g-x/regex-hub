@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CodeMirrorEditor from './CodeMirrorEditor.vue'
+import { nextTick } from 'vue'
 import { SIMPLE_CASES_QUERY } from '../types/query'
 // @ts-ignore
 import { parse, Kit, Raphael, visualize } from 'regulex_common'
@@ -12,7 +13,7 @@ const { result } = useQuery(SIMPLE_CASES_QUERY)
 const caseList = useResult(result, [])
 
 const regex = ref('')
-const flags = ref([])
+const flags = ref(['g'])
 const flagOptions = [
   {
     label: 'ignore case (i)',
@@ -33,6 +34,8 @@ let paper: Raphael = null
 onMounted(() => {
   // @ts-ignore
   paper = Raphael('regex-image', 0, 0)
+
+  codeMirrorEditorRef.value.updateHighlightRange()
 })
 
 /**
@@ -89,12 +92,23 @@ const isValidRegex = computed(() => {
 const randomExp = ref('')
 watch(regex, () => generateRandomExp())
 
-function matchFn() {
-  console.log(regex.value, viewFlags.value)
+function matchFn(text: string): RegExpMatchArray[] {
+  if (!text || text.length === 0 || regex.value.length === 0) {
+    return []
+  }
+
+  let regExp: RegExp = new RegExp(regex.value, viewFlags.value)
+
+  if (viewFlags.value.includes('g')) {
+    return Array.from(text.matchAll(regExp))
+  }
+  return [regExp.exec(text) as RegExpMatchArray]
 }
 
 function docChanged() {
-  console.log('docChanged')
+  nextTick(() => {
+    codeMirrorEditorRef.value.updateHighlightRange()
+  })
 }
 
 /**
@@ -117,7 +131,7 @@ const generateRandomExp = () => (randomExp.value = RandExp.randexp(regex.value))
           <template #prefix>/</template>
           <template #suffix>
             <span>/</span>
-            <n-popselect v-model:value="flags" multiple :options="flagOptions">
+            <n-popselect v-model:value="flags" multiple :options="flagOptions" @update:value="docChanged">
               <div class="flex items-center">
                 <span id="flags" class="mx-1 cursor-pointer">{{ viewFlags }}</span>
                 <n-icon class="cursor-pointer" :component="FlagIcon" />
@@ -127,7 +141,12 @@ const generateRandomExp = () => (randomExp.value = RandExp.randexp(regex.value))
         </n-input>
 
         <div class="text-left mt-1 select-none">Test String</div>
-        <CodeMirrorEditor ref="codeMirrorEditorRef" :matchFn="matchFn" @docChanged="docChanged" />
+        <CodeMirrorEditor
+          ref="codeMirrorEditorRef"
+          :matchFn="matchFn"
+          :regExpFlags="viewFlags"
+          @docChanged="docChanged"
+        />
 
         <div id="regex-image" v-show="isValidRegex"></div>
       </n-space>

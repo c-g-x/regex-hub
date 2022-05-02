@@ -1,56 +1,122 @@
 <script setup lang="ts">
-import { EditorState } from '@codemirror/state'
-import { EditorView, keymap, ViewPlugin, ViewUpdate, highlightActiveLine } from '@codemirror/view'
+import { EditorState, Extension, StateEffect, StateField } from '@codemirror/state'
+import {
+  EditorView,
+  keymap,
+  ViewPlugin,
+  ViewUpdate,
+  highlightActiveLine,
+  Decoration,
+  DecorationSet,
+} from '@codemirror/view'
 import { defaultKeymap } from '@codemirror/commands'
 import { lineNumbers, highlightActiveLineGutter } from '@codemirror/gutter'
-import { HighlightStyle, defaultHighlightStyle, Tag } from '@codemirror/highlight'
+import { defaultHighlightStyle } from '@codemirror/highlight'
+import { RangeSet, RangeSetBuilder } from '@codemirror/rangeset'
 import DocSizePlugin from './codemirror/DocSizePlugin'
 import { UnderlineKeymapPlugin } from './codemirror/UnderlineSelection'
 
-const props = defineProps(['matchFn'])
+const props = defineProps(['matchFn', 'regExpFlags', 'doc'])
 const emit = defineEmits(['docChanged'])
 
-const DarkHighlightStyle = HighlightStyle.define([], {
-  themeType: 'dark',
-})
-// DarkHighlightStyle.match(Tag.define(), null)
 const data: { view?: EditorView } = reactive({
   view: undefined,
 })
 
 // 暗色主题
-const darkTheme = EditorView.theme({}, { dark: true })
+const darkTheme: Extension = EditorView.theme({}, { dark: true })
+const highlightMark: Decoration = Decoration.mark({ class: 'cm-searchMatch' })
 
-// 监听 doc 变化的插件
-const domChangeUpdaterPlugin = ViewPlugin.fromClass(
+const addHighlight = StateEffect.define<{ from: number; to: number }>()
+const highlightField = StateField.define<DecorationSet>({
+  create() {
+    return Decoration.none
+  },
+  update(marks, tr) {
+    if (
+      // @ts-ignore
+      tr.annotations.length === 2 &&
+      // @ts-ignore
+      tr.annotations.findIndex((annotation) => ['select.pointer'].includes(annotation.value)) !== -1
+    ) {
+      return marks
+    }
+
+    marks = RangeSet.empty //marks.map(tr.changes)
+    let empty = true
+    tr.effects.forEach((effect) => {
+      if (effect.is(addHighlight)) {
+        marks = marks.update({
+          filter: (from, to, _) => from !== effect.value.from && to !== effect.value.to,
+          add: [highlightMark.range(effect.value.from, effect.value.to)],
+        })
+        empty = false
+      }
+    })
+    return empty ? RangeSet.empty : marks
+  },
+  provide: (field) => EditorView.decorations.from(field),
+})
+const RegExpHighlightPlugin = ViewPlugin.fromClass(
   class {
-    constructor(view: EditorView) {}
+    decorations: DecorationSet = Decoration.none
+
+    constructor(view: EditorView) {
+      this.buildRegExpDecoration(view)
+    }
 
     update(update: ViewUpdate) {
-      const { docChanged, state } = update
-      if (update.docChanged) {
-        console.log(state)
-        emit('docChanged')
-        updateHighlightRange()
-        props.matchFn()
+      const { docChanged, view } = update
+      if (docChanged) {
+        this.buildRegExpDecoration(view)
       }
     }
-  }
+
+    buildRegExpDecoration(view: EditorView) {
+      let builder = new RangeSetBuilder<Decoration>()
+      let viewportLines = 'm'.includes(props.regExpFlags) ? view.viewportLineBlocks : [view.viewportLineBlocks[0]]
+      viewportLines.forEach((line) => {
+        let lineObj = view.state.doc.lineAt(line.from)
+        try {
+          let matches: RegExpMatchArray[] = props.matchFn(lineObj.text)
+          matches.forEach((match) => {
+            if (match && match[0]) {
+              let startIndex = match.index || 0
+              let endIndex = startIndex + match[0].length
+              builder.add(line.from + startIndex, line.from + endIndex, highlightMark)
+            }
+          })
+        } catch (e) {
+          // ignore
+        }
+      })
+
+      this.decorations = builder.finish()
+    }
+  },
+  { decorations: (v) => v.decorations }
 )
 
 // 创建编辑器初始状态
 const startState: EditorState = EditorState.create({
-  doc: 'Hello World',
+  doc: props.doc || 'Hello World',
   extensions: [
     keymap.of(defaultKeymap),
     lineNumbers(),
     highlightActiveLineGutter(),
-    domChangeUpdaterPlugin,
     darkTheme,
     DocSizePlugin,
     highlightActiveLine(),
     defaultHighlightStyle,
     UnderlineKeymapPlugin,
+    EditorView.baseTheme({
+      '.cm-searchMatch': { backgroundColor: 'green' },
+    }),
+    EditorView.updateListener.of((update: ViewUpdate) => {
+      if (update.docChanged) {
+        emit('docChanged', update.state.doc)
+      }
+    }),
   ],
 })
 
@@ -61,13 +127,35 @@ onMounted(() => {
   })
 })
 
-function updateHighlightRange() {
-  console.log('updateHighlightRange')
-  // data.view.dispatch()
+function updateHighlightRange(view: EditorView = data.view as EditorView) {
+  let viewportLines = props.regExpFlags.includes('m') ? view.viewportLineBlocks : [view.viewportLineBlocks[0]]
+
+  const effects: any = []
+  viewportLines.forEach((line) => {
+    let lineObj = view.state.doc.lineAt(line.from)
+
+    try {
+      let matches: RegExpMatchArray[] = props.matchFn(lineObj.text)
+      matches.forEach((match) => {
+        if (match && match[0]) {
+          let startIndex = match.index || 0
+          let endIndex = startIndex + match[0].length
+          effects.push(addHighlight.of({ from: line.from + startIndex, to: line.from + endIndex }))
+        }
+      })
+    } catch (e) {
+      // ignore
+    }
+  })
+  if (!view.state.field(highlightField, false)) {
+    effects.push(StateEffect.appendConfig.of([highlightField]))
+  }
+
+  view.dispatch({ effects })
 }
 
 defineExpose({
-  updateHighlightRange
+  updateHighlightRange,
 })
 </script>
 
