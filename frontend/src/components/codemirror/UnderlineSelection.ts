@@ -1,10 +1,10 @@
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view'
-import { StateField, StateEffect } from '@codemirror/state'
+import { StateField, StateEffect, StateEffectType } from '@codemirror/state'
 import { keymap } from '@codemirror/view'
 
-const addUnderline = StateEffect.define<{ from: number; to: number }>()
+const addUnderline: StateEffectType<{ from: number; to: number }> = StateEffect.define<{ from: number; to: number }>()
 
-const underlineField = StateField.define<DecorationSet>({
+const underlineField: StateField<DecorationSet> = StateField.define<DecorationSet>({
   create() {
     return Decoration.none
   },

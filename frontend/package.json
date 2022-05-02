@@ -11,6 +11,7 @@
     "@apollo/client": "^3.5.10",
     "@codemirror/commands": "^0.19.8",
     "@codemirror/gutter": "^0.19.9",
+    "@codemirror/rangeset": "^0.19.9",
     "@codemirror/state": "^0.19.9",
     "@codemirror/text": "^0.19.6",
     "@codemirror/view": "^0.19.48",
