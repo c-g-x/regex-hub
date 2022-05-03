@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import Hub from './components/Hub.vue'
 import Editor from './components/Editor.vue'
+import Profile from './components/Profile.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -13,6 +14,11 @@ const routes: RouteRecordRaw[] = [
     path: '/hub',
     name: 'Hub',
     component: Hub,
+  },
+  {
+    path: '/profile/:id',
+    name: 'profile',
+    component: Profile,
   },
 ]
 
