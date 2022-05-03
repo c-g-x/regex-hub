@@ -72,6 +72,10 @@ function toIndex() {
 function toProfile() {
   router.push(`/profile/${userInfo.value._id}`)
 }
+
+function toFavorite() {
+  router.push(`/favorite/${userInfo.value._id}`)
+}
 </script>
 
 <template>
@@ -97,7 +101,7 @@ function toProfile() {
                 </template>
                 创作
               </n-button>
-              <n-button ghost>
+              <n-button ghost @click="toFavorite">
                 <template #icon>
                   <n-icon :component="StarIcon" />
                 </template>
