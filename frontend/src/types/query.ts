@@ -18,3 +18,19 @@ export const SIMPLE_CASES_QUERY = gql`
     }
   }
 `
+
+export const LOGIN = gql`
+  query loginUser($username: String!, $password: String!) {
+    loginUser(username: $username, password: $password) {
+      _id
+      favorite {
+        _id
+        title
+      }
+      create {
+        _id
+        title
+      }
+    }
+  }
+`
