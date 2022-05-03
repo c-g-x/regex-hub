@@ -1,36 +1,10 @@
 <template>
   <n-space vertical>
     <n-card class="text-left">
-      <template #header>
-        <n-skeleton v-if="loading" text width="60%" />
-        <template v-else>
-          <n-h1 prefix="bar">
-            <n-text type="primary">
-              {{ userInfo.username }}
-            </n-text>
-          </n-h1>
-        </template>
-      </template>
       <n-skeleton v-if="loading" text :repeat="6" />
       <template v-else>
         <n-h2 prefix="bar" type="success">
-          <n-text type="success"> 创作 </n-text>
-        </n-h2>
-        <div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" v-if="userInfo.create.length">
-          <n-card :title="aCase.title" v-for="aCase in userInfo.create" hoverable :key="aCase._id" />
-        </div>
-        <n-gradient-text
-          v-else
-          :gradient="{
-            from: 'rgb(85, 85, 85)',
-            to: 'rgb(170, 170, 170)',
-          }"
-        >
-          这里空空的什么也没有
-        </n-gradient-text>
-
-        <n-h2 prefix="bar" type="success">
-          <n-text type="success"> 收藏 </n-text>
+          <n-text type="success">我的收藏</n-text>
         </n-h2>
         <div
           class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"

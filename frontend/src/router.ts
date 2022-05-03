@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import Hub from './components/Hub.vue'
 import Editor from './components/Editor.vue'
 import Profile from './components/Profile.vue'
+import Favorite from './components/Favorite.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -19,6 +20,11 @@ const routes: RouteRecordRaw[] = [
     path: '/profile/:id',
     name: 'profile',
     component: Profile,
+  },
+  {
+    path: '/favorite/:id',
+    name: 'favorite',
+    component: Favorite,
   },
 ]
 
