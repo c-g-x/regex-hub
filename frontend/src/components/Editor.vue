@@ -111,6 +111,11 @@ function docChanged() {
   })
 }
 
+function updateAllStatus() {
+  changeHeightLight()
+  docChanged()
+}
+
 /**
  * 随机生成正则表达式用例
  */
@@ -131,7 +136,7 @@ const generateRandomExp = () => (randomExp.value = RandExp.randexp(regex.value))
           <template #prefix>/</template>
           <template #suffix>
             <span>/</span>
-            <n-popselect v-model:value="flags" multiple :options="flagOptions" @update:value="docChanged">
+            <n-popselect v-model:value="flags" multiple :options="flagOptions" @update:value="updateAllStatus">
               <div class="flex items-center">
                 <span id="flags" class="mx-1 cursor-pointer">{{ viewFlags }}</span>
                 <n-icon class="cursor-pointer" :component="FlagIcon" />
