@@ -44,3 +44,20 @@ export const REGISTER = gql`
     }
   }
 `
+
+export const GET_USER = gql`
+  query getUser($id: ID!) {
+    getUser(id: $id) {
+      _id
+      username
+      favorite {
+        _id
+        title
+      }
+      create {
+        _id
+        title
+      }
+    }
+  }
+`

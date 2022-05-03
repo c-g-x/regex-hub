@@ -68,6 +68,10 @@ onRegistered(({ data: { registerUser } }) => {
 function toIndex() {
   router.push('/')
 }
+
+function toProfile() {
+  router.push(`/profile/${userInfo.value._id}`)
+}
 </script>
 
 <template>
@@ -99,7 +103,7 @@ function toIndex() {
                 </template>
                 收藏
               </n-button>
-              <n-button round>
+              <n-button round @click="toProfile">
                 <template #icon>
                   <n-icon :component="ProfileIcon" />
                 </template>
