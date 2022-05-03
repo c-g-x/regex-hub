@@ -43,7 +43,7 @@ export default defineConfig({
             // alias
             ['[from]', '[alias]'],
           ],
-          '@vue/apollo-composable': ['useQuery', 'useResult'],
+          '@vue/apollo-composable': ['useQuery', 'useResult', 'useMutation'],
           'graphql-tag': [['default', 'gql']],
         },
       ],

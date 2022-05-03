@@ -23,6 +23,7 @@ export const LOGIN = gql`
   query loginUser($username: String!, $password: String!) {
     loginUser(username: $username, password: $password) {
       _id
+      username
       favorite {
         _id
         title
@@ -31,6 +32,15 @@ export const LOGIN = gql`
         _id
         title
       }
+    }
+  }
+`
+
+export const REGISTER = gql`
+  mutation registerUser($username: String!, $password: String!) {
+    registerUser(username: $username, password: $password) {
+      _id
+      username
     }
   }
 `
