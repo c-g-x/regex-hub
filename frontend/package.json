@@ -38,5 +38,5 @@
     "vite": "^2.8.0",
     "vue-tsc": "^0.29.8"
   },
-  "web-types": "./web-types.json"
+  "web-types": "../web-types.json"
 }

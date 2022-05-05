@@ -1,0 +1,173 @@
+{
+  "$schema": "./schema.json",
+  "name": "Shine Component Support",
+  "version": "1.0.0",
+  "contributions": {
+    "html": {
+      "attributes": [
+        {
+          "name": "#header",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "#title",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "#avatar",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "#extra",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "#icon",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "#footer",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "quaternary",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "strong",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "secondary",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "item-responsive",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "embedded",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "multiple",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "bordered",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "#default",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "#action",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "#prefix",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "#suffix",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "theme",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "ghost",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "round",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "text",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "vertical",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        },
+        {
+          "name": "hoverable",
+          "value": {
+            "required": false,
+            "default": ""
+          }
+        }
+
+      ]
+    }
+  }
+}
