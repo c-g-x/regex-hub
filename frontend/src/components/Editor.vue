@@ -7,6 +7,12 @@ import { parse, Kit, Raphael, visualize } from 'regulex_common'
 import FlagIcon from './icons/FlagIcon.vue'
 import RandExp from 'randexp'
 
+const route = useRoute()
+
+const caseId = route.params.caseId;
+const author = route.query.author;
+console.log(caseId, author)
+
 const codeMirrorEditorRef = ref()
 
 const { result } = useQuery(SIMPLE_CASES_QUERY)
