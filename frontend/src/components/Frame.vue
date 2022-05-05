@@ -2,11 +2,11 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import { useMessage } from 'naive-ui'
-import GithubCorner from './components/GithubCorner.vue'
-import ProfileIcon from './components/icons/ProfileIcon.vue'
-import AddIcon from './components/icons/AddIcon.vue'
-import StarIcon from './components/icons/StarIcon.vue'
-import { LOGIN, REGISTER } from './types/query'
+import GithubCorner from './GithubCorner.vue'
+import ProfileIcon from './icons/ProfileIcon.vue'
+import AddIcon from './icons/AddIcon.vue'
+import StarIcon from './icons/StarIcon.vue'
+import { LOGIN, REGISTER } from '../types/query'
 
 const router = useRouter()
 const mode = reactive({
