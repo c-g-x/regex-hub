@@ -17,7 +17,14 @@
           <n-text type="success"> 创作 </n-text>
         </n-h2>
         <div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" v-if="userInfo.create.length">
-          <n-card :title="aCase.title" v-for="aCase in userInfo.create" hoverable :key="aCase._id" />
+          <n-card
+            :title="aCase.title"
+            v-for="aCase in userInfo.create"
+            hoverable
+            :key="aCase._id"
+            class="cursor-pointer"
+            @click="toPreview(aCase._id)"
+          />
         </div>
         <n-gradient-text
           v-else
@@ -36,7 +43,14 @@
           class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           v-if="userInfo.favorite.length"
         >
-          <n-card :title="aCase.title" v-for="aCase in userInfo.favorite" hoverable :key="aCase._id" />
+          <n-card
+            :title="aCase.title"
+            v-for="aCase in userInfo.favorite"
+            hoverable
+            :key="aCase._id"
+            class="cursor-pointer"
+            @click="toPreview(aCase._id)"
+          />
         </div>
         <n-gradient-text
           v-else
@@ -57,9 +71,18 @@ import type { RouteLocationNormalized } from 'vue-router'
 import { GET_USER } from '../types/query'
 
 const route: RouteLocationNormalized = useRoute()
-
+const router = useRouter()
 const { result, loading } = useQuery(GET_USER, { id: route.params.id })
 const userInfo = useResult(result, {})
+
+function toPreview(caseId: string) {
+  router.push({
+    path: `/preview/${caseId}`,
+    query: {
+      author: userInfo.value._id,
+    },
+  })
+}
 </script>
 
 <style scoped></style>

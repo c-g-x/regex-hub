@@ -26,6 +26,11 @@ const routes: RouteRecordRaw[] = [
     name: 'favorite',
     component: Favorite,
   },
+  {
+    path: '/preview/:caseId',
+    name: 'preview',
+    component: Editor,
+  },
 ]
 
 const router = createRouter({
