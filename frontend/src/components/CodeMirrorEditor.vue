@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { EditorState, Extension, StateEffect, StateField } from '@codemirror/state'
+import { EditorState, Extension, StateEffect, StateField, Transaction } from '@codemirror/state'
 import {
   EditorView,
   keymap,
@@ -32,7 +32,7 @@ const highlightField = StateField.define<DecorationSet>({
   create() {
     return Decoration.none
   },
-  update(marks, tr) {
+  update(marks: DecorationSet, tr: Transaction) {
     if (
       // @ts-ignore
       tr.annotations.length === 2 &&
