@@ -9,8 +9,9 @@ import RandExp from 'randexp'
 
 const route = useRoute()
 
-const caseId = route.params.caseId;
-const author = route.query.author;
+const caseId = route.params.caseId
+const author = route.query.author
+const canModify = computed(() => !!caseId && !!author)
 console.log(caseId, author)
 
 const codeMirrorEditorRef = ref()
@@ -122,6 +123,13 @@ function updateAllStatus() {
   docChanged()
 }
 
+function saveCase() {
+  console.log('保存')
+}
+function deleteCase() {
+  console.log('删除')
+}
+
 /**
  * 随机生成正则表达式用例
  */
@@ -160,6 +168,10 @@ const generateRandomExp = () => (randomExp.value = RandExp.randexp(regex.value))
         />
 
         <div id="regex-image" v-show="isValidRegex"></div>
+        <div v-if="canModify" class="text-right mt-1">
+          <n-tag @click="saveCase" class="cursor-pointer mr-1" type="success">保存</n-tag>
+          <n-tag @click="deleteCase" class="cursor-pointer ml-1" type="error">删除</n-tag>
+        </div>
       </n-space>
     </n-gi>
     <n-gi>
@@ -171,9 +183,9 @@ const generateRandomExp = () => (randomExp.value = RandExp.randexp(regex.value))
             </div>
           </template>
           <template #action>
-            <n-button @click="generateRandomExp" class="w-full text-white" type="success" strong secondary
-              >重新生成</n-button
-            >
+            <n-button @click="generateRandomExp" class="w-full text-white" type="success" strong secondary>
+              重新生成
+            </n-button>
           </template>
         </n-card>
 
