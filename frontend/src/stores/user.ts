@@ -6,10 +6,13 @@ export const useUserStore = defineStore('user', {
   },
   getters: {
     userId: (state) => state._id,
+
+    isLogin: (state) => state._id !== null,
   },
   // could also be defined as
   actions: {
-    login(_id) {
+    login(_id: string) {
+      // @ts-ignore
       this.$patch({ _id })
     },
 

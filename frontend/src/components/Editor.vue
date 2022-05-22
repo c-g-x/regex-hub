@@ -7,11 +7,16 @@ import { parse, Kit, Raphael, visualize } from 'regulex_common'
 import FlagIcon from './icons/FlagIcon.vue'
 import RandExp from 'randexp'
 
+// @ts-ignore
+import { useUserStore } from '../stores/user'
+
+const userStore = useUserStore()
+
 const route = useRoute()
 
 const caseId = route.params.caseId
 const author = route.query.author
-const canModify = computed(() => !!caseId && !!author)
+const canModify = computed(() => !!caseId && !!author && userStore.userId === author)
 console.log(caseId, author)
 
 const codeMirrorEditorRef = ref()
