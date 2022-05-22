@@ -15,6 +15,7 @@ const typeDefs = gql`
     title: String!
     re: String! # regex pattern
     test: String # test
+    user: User
   }
 
   input CreateCaseInput {
@@ -39,7 +40,7 @@ const typeDefs = gql`
     getUser(id: ID!): User
     getCases(userId: ID): [Case!]!
     loginUser(username: String!, password: String!): User
-    # getCaseById(id: ID!): Case
+    getCase(id: ID!): Case
   }
 
   type Mutation {

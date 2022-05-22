@@ -13,7 +13,6 @@ const userStore = useUserStore()
 
 const router = useRouter()
 const mode = reactive({
-  isLogin: false,
   showLoginModal: false,
   isRegisterMode: false,
 })
@@ -35,10 +34,8 @@ function login() {
   userInfo = useResult(result, {})
 
   if (userInfo.value) {
-    console.log(userInfo.value)
     message.success(`登录成功，${userInfo.value.username}`)
     userStore.login(userInfo.value._id)
-    mode.isLogin = true
     mode.showLoginModal = false
   } else {
     message.error(`登录失败，用户名或密码错误`)
@@ -66,7 +63,6 @@ onRegistered(({ data: { registerUser } }) => {
 
     userStore.login(userInfo.value._id)
     mode.showLoginModal = false
-    mode.isLogin = true
   } else {
     message.error(`注册失败，该用户已存在`)
   }
@@ -87,7 +83,6 @@ function toFavorite() {
 function logout() {
   userStore.logout()
   message.success('退出成功')
-  mode.isLogin = false
   toIndex()
 }
 </script>
@@ -105,7 +100,7 @@ function logout() {
           <n-space class="mr-10">
             <n-button>关于</n-button>
 
-            <n-button v-if="!mode.isLogin" @click=";(mode.showLoginModal = true) && (mode.isRegisterMode = false)">
+            <n-button v-if="!userStore.isLogin" @click="(mode.showLoginModal = true) && (mode.isRegisterMode = false)">
               登录
             </n-button>
             <n-button-group v-else>

@@ -19,6 +19,16 @@ export const SIMPLE_CASES_QUERY = gql`
   }
 `
 
+export const CASE_QUERY = gql`
+    query Case($id: ID!) {
+        getCase(id: $id) {
+            _id
+            title
+        }
+    }
+`
+
+
 export const LOGIN = gql`
   query loginUser($username: String!, $password: String!) {
     loginUser(username: $username, password: $password) {
