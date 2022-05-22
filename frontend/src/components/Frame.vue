@@ -7,6 +7,9 @@ import ProfileIcon from './icons/ProfileIcon.vue'
 import AddIcon from './icons/AddIcon.vue'
 import StarIcon from './icons/StarIcon.vue'
 import { LOGIN, REGISTER } from '../types/query'
+import { useUserStore } from '../stores/user'
+
+const userStore = useUserStore()
 
 const router = useRouter()
 const mode = reactive({
@@ -32,7 +35,9 @@ function login() {
   userInfo = useResult(result, {})
 
   if (userInfo.value) {
+    console.log(userInfo.value)
     message.success(`登录成功，${userInfo.value.username}`)
+    userStore.login(userInfo.value._id)
     mode.isLogin = true
     mode.showLoginModal = false
   } else {
@@ -58,6 +63,8 @@ onRegistered(({ data: { registerUser } }) => {
   if (registerUser) {
     userInfo.value = registerUser
     message.success(`登录成功，${userInfo.value.username}`)
+
+    userStore.login(userInfo.value._id)
     mode.showLoginModal = false
     mode.isLogin = true
   } else {
@@ -75,6 +82,13 @@ function toProfile() {
 
 function toFavorite() {
   router.push(`/favorite/${userInfo.value._id}`)
+}
+
+function logout() {
+  userStore.logout()
+  message.success('退出成功')
+  mode.isLogin = false
+  toIndex()
 }
 </script>
 
@@ -112,6 +126,12 @@ function toFavorite() {
                   <n-icon :component="ProfileIcon" />
                 </template>
                 我的
+              </n-button>
+              <n-button round @click="logout">
+                <!--                <template #icon>-->
+                <!--                  <n-icon :component="ProfileIcon" />-->
+                <!--                </template>-->
+                登出
               </n-button>
             </n-button-group>
           </n-space>

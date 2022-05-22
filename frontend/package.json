@@ -19,6 +19,7 @@
     "codemirror": "^5.65.2",
     "graphql": "^16.3.0",
     "graphql-tag": "^2.12.6",
+    "pinia": "^2.0.14",
     "randexp": "^0.5.3",
     "regulex_common": "^0.1.1",
     "vue": "^3.2.25",
