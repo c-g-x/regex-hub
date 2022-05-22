@@ -16,7 +16,11 @@ const route = useRoute()
 
 const caseId = route.params.caseId
 const author = route.query.author
-const canModify = computed(() => !!caseId && !!author && userStore.userId === author)
+
+const isDetail = computed(() => !!caseId && !!author)
+const canModify = computed(() => isDetail && userStore.userId === author)
+
+
 console.log(caseId, author)
 
 const codeMirrorEditorRef = ref()
