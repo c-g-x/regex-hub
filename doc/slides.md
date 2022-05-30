@@ -33,7 +33,7 @@ aspectRatio: 16/10
 | School  | FAFU       |
 | SNo.    | 3186016025 |
 | Author  | 陈贵昕     |
-| Teacher | 严吉强     |
+| Teacher | 颜吉强     |
 
 <div class="pt-12">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
@@ -231,18 +231,25 @@ layout: cover
 </style>
 
 ---
-layout: 'image-right'
-image: https://source.unsplash.com/collection/94734566/1920x1080
-
----
 
 # GraphQL
 
 GraphQL 是一种针对 Graph（图状数据）进行查询特别有优势的 Query Language（查询语言），所以叫做 GraphQL
 
+<v-click>
+<div class="w-full pt-2">
+<img src="/graphql.png" class="rounded shadow mx-auto" style="height: 300px"/>
+</div>
+</v-click>
+
+<div class="grid grid-cols-3 gap-1">
+
+<div>
+<v-click>
+
 - 定义数据模型
 
-```ts
+```graphql
 type Project {
   name: String
   tagline: String
@@ -250,9 +257,15 @@ type Project {
 }
 ```
 
+</v-click>
+</div>
+
+<div>
+<v-click>
+
 - 请求数据
 
-```ts
+```text
 {
   project(name: "GraphQL") {
     tagline
@@ -260,20 +273,80 @@ type Project {
 }
 ```
 
+</v-click>
+</div>
+
+<div>
+<v-click>
+
 - 得到可预测的结果
 
 ```json
 {
   "project": {
-    "tagline": "A query language for APIs"
+    "tagline": "APIs"
   }
 }
 ```
 
+</v-click>
+</div>
+
+</div>
+
 ---
-layout: image-left
+layout: iframe
+
+# the web page source
+url: https://graphql.org/learn/queries/#arguments
+
+# a custom class name to the content
+class: my-cool-content-on-the-left
+---
+
+---
+layout: two-cols
 image: https://source.unsplash.com/collection/94734567/1920x1080
 ---
+
+```json
+{
+  "dependencies": {
+    "@apollo/client": "^3.5.10",
+    "@codemirror/commands": "^0.19.8",
+    "@codemirror/gutter": "^0.19.9",
+    "@codemirror/rangeset": "^0.19.9",
+    "@codemirror/state": "^0.19.9",
+    "@codemirror/text": "^0.19.6",
+    "@codemirror/view": "^0.19.48",
+    "@vue/apollo-composable": "^4.0.0-alpha.16",
+    "codemirror": "^5.65.2",
+    "graphql": "^16.3.0",
+    "graphql-tag": "^2.12.6",
+    "pinia": "^2.0.14",
+    "randexp": "^0.5.3",
+    "regulex_common": "^0.1.1",
+    "vue": "^3.2.25",
+    "vue-router": "4"
+  },
+  "devDependencies": {
+    "@codemirror/highlight": "^0.19.8",
+    "@codemirror/search": "^0.19.10",
+    "@vitejs/plugin-vue": "^2.2.0",
+    "autoprefixer": "^10.4.4",
+    "naive-ui": "^2.26.4",
+    "postcss": "^8.4.12",
+    "prettier": "^2.6.1",
+    "tailwindcss": "^3.0.23",
+    "typescript": "^4.5.4",
+    "unplugin-auto-import": "^0.6.9",
+    "vite": "^2.8.0",
+    "vue-tsc": "^0.29.8"
+  }
+}
+```
+
+::right::
 
 # Other technologies
 
@@ -331,14 +404,18 @@ h2 {
 p {
   @apply mt-0.5 !important;
 }
+
+.grid {
+  @apply gap-4;
+}
 </style>
 
 ---
 
-# Bakcend
-
 <div grid="~ cols-2 gap-4">
 <div>
+
+# Bakcend
 
 - Apollo Server
 - GraphQL
@@ -350,11 +427,7 @@ p {
 </div>
 <div>
 
-```html
-<Tweet id="1390115482657726468" />
-```
-
-<Tweet id="1390115482657726468" scale="0.65" />
+<img src="/mongoose.png" class="rounded shadow"/>
 
 </div>
 </div>
@@ -364,20 +437,131 @@ p {
 # 演示文稿
 
 - Vue
-- Slidev - `Slide + developer`, - `reveal.js`
+- Slidev
 - Naive UI
+- uno css
+- LaTeX
+
+<img src="/slidev-demo.png" class="rounded shadow" alt="uno css" />
+
+<style>
+ul {
+  @apply grid grid-cols-3 mb-2;
+}
+</style>
+
+<!--
+1. slidev = slide + developer
+2. slide = reveal.js 实现
+3. reveal.js = html 展示器
+
+uno css, 类似 tailwind css，原子化 CSS，比 tailwind CSS 语法更简洁
+-->
 
 ---
 
 # 核心实现
 
-asdasdasd
+## GraphQL schema
+
+<div class="grid grid-cols-2 gap-1">
+
+```graphql {all|5-6|19|5-6|all}
+type User {
+  _id: ID!
+  username: String!
+  password: String!
+  favorite: [Case!] # 收藏的用例列表
+  create: [Case!] # 创建的用例列表
+}
+
+
+
+
+
+
+type Case {
+  _id: ID!
+  title: String!
+  re: String! # regex pattern
+  test: String # test
+  user: User
+}
+```
+
+```graphql {all|1|10|all}
+type Query {
+    getUser(id: ID!): User
+    getCases(userId: ID): [Case!]!
+    loginUser(username: String!, 
+              password: String!): User
+    getCase(id: ID!): Case
+    # .....
+}
+
+type Mutation {
+    registerUser(username: String!,
+                 password: String!): User
+    deleteUser(id: ID!): Boolean!
+
+    createCase(input: CreateCaseInput,
+               userId: ID!): Case
+    deleteCase(id: ID!): ID
+    favoriteCase(id: ID!): Boolean!
+    # ......
+}
+```
+
+</div>
+
+<!--
+1. 定义一个状态
+2. 描述好该状态的属性（使用什么装饰器）
+3. 通过 DOM event 触发一个 transaction 事务
+4. 通过 **事务** 触发定义的状态
+5. 将状态调用显示回到页面视图
+-->
+
+---
+
+# 后端结构
+
+<img src="/backend.png" class="rounded shadow" alt="uno css" />
+
+<!--
+1. 通过Apollo Server定义的Schema暴露接口
+2. 通过context在上下文中注入Mongoose Model，连接到MongoDB数据库
+3. 通过Resolvers实现查询操作Query和修改操作Mutation
+4. 在具体的查询中通过访问Mongoose Model实现createCase、deleteCase……等操作
+-->
 
 ---
 
 # 项目展示
 
-asdasdasd
+
+<v-click>
+<div style="text-align: center; font-size: 120%; font-weight: bold; font-family: sans-serif;">
+  <div class="box" style="background: #c33;">DOM event</div>
+  <div>↗<span style="width: 5em; display: inline-block;"></span>↘</div>
+  <div>
+    <div class="box" style="margin: 0 2em 0 3em; background: #55b">view</div>
+    <div class="box" style="background: #77e">transaction</div>
+  </div>
+  <div>↖<span style="width: 5em; display: inline-block;"></span>↙</div>
+  <div class="box" style="background: #446;">new state</div>
+</div>
+</v-click>
+
+<style>
+.box {
+	color: white;
+	display: inline-block;
+	border-radius: 5px;
+	padding: 6px 15px;
+	margin: 3px 0;
+}
+</style>
 
 ---
 
