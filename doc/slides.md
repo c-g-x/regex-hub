@@ -1,27 +1,18 @@
 ---
-# try also 'default' to start simple
 theme: seriph
-# random image from a curated Unsplash collection by Anthony
-# like them? see https://unsplash.com/collections/94734566/slidev
 background: https://source.unsplash.com/collection/94734566/1920x1080
-# apply any windi css classes to the current slide
-class: 'text-center'
-# https://sli.dev/custom/highlighters.html
+class: text-center
 highlighter: shiki
-# show line numbers in code blocks
 lineNumbers: true
-# some information about the slides, markdown enabled
 info: |
   ## Slidev Starter Template
   Presentation slides for developers.
 
   Learn more at [Sli.dev](https://sli.dev)
-# persist drawings in exports and build
 drawings:
   persist: false
-
 aspectRatio: 16/10
-
+title: 毕业论文答辩
 ---
 
 # 毕业论文答辩
@@ -52,7 +43,8 @@ aspectRatio: 16/10
 </div>
 
 <!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
+我是来自2018级软件工程1班的陈贵昕，我的指导老师是颜吉强老师。
+本次答辩的题目是**基于CodeMirror.next和GraphQL的正则表达式可视化存储系统**。
 -->
 
 ---
@@ -709,6 +701,7 @@ const startState: EditorState = EditorState.create({
 ---
 layout: cover
 ---
+
 # 结束语
 
 <!--
@@ -716,7 +709,8 @@ layout: cover
 
 实现了正则表达式可视化，正则表达式随机匹配串生成，用户功能以及正则用例功能。
 
-本次的毕业课程设计采取了全新的技术，学习了在线编码协作平台replit和Chrome开发者工具中所使用的CodeMirror.next代码编辑器，也是使用Vue框架通过GraphQL进行前后端交互的首次尝试。
+本次的毕业课程设计采取了全新的技术，学习了在线编码协作平台replit和Chrome开发者工具中所使用的CodeMirror.next代码编辑器，也是使用Vue框架通过GraphQL打通前后端进行交互的首次尝试。
 
-本设计内容虽然达到预期效果，但实现的程序还存在一些不足之处，如安全性、可扩展性、用户社交功能不完善，界面不够友好等。对于上述问题，可以通过重新设计UI，添加文章分享分析模块等功能来解决。
+本设计是在颜吉强导师的指导下，给予了我很多的关心和帮助，对于我所遇到的问题，都提出了很重要的方向性建议，使我受益匪浅。
+本设计的完成还要感谢我的朋友、同学以及同事，另外还要感谢家人的默默支持，也感谢答辩老师和同学在下面聆听我的汇报，谢谢大家！
 -->
