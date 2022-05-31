@@ -64,7 +64,7 @@ The last comment block of each slide will be treated as slide notes. It will be 
 - Part One: 选题背景与意义
 - Part Two: 使用到的技术栈
 - Part Three: 核心实现 & 项目展示
-- Part Four: 致谢
+- Part Four: 结束语
 
 <style>
 li {
@@ -441,6 +441,7 @@ p {
 - Naive UI
 - uno css
 - LaTeX
+- mermaid
 
 <img src="/slidev-demo.png" class="rounded shadow" alt="uno css" />
 
@@ -456,6 +457,8 @@ ul {
 3. reveal.js = html 展示器
 
 uno css, 类似 tailwind css，原子化 CSS，比 tailwind CSS 语法更简洁
+
+mermaid: 用文本语法来描述文档图形(流程图、 时序图、甘特图)的工具，在文档中嵌入一段 mermaid 文本来生成 SVG 形式的图形
 -->
 
 ---
@@ -537,10 +540,8 @@ type Mutation {
 
 ---
 
-# 项目展示
+# CodeMirrorEditor
 
-
-<v-click>
 <div style="text-align: center; font-size: 120%; font-weight: bold; font-family: sans-serif;">
   <div class="box" style="background: #c33;">DOM event</div>
   <div>↗<span style="width: 5em; display: inline-block;"></span>↘</div>
@@ -551,7 +552,6 @@ type Mutation {
   <div>↖<span style="width: 5em; display: inline-block;"></span>↙</div>
   <div class="box" style="background: #446;">new state</div>
 </div>
-</v-click>
 
 <style>
 .box {
@@ -565,181 +565,158 @@ type Mutation {
 
 ---
 
-# 优化方案
+# CodeMirrorEditor
+
+定义状态影响的范围，装饰器以及装饰器作用的类
+
+```ts
+const highlightMark: Decoration = Decoration.mark({ class: 'cm-searchMatch' })
+
+const addHighlight = StateEffect.define<{ from: number; to: number }>()
+const highlightField = StateField.define<DecorationSet>({
+  create() { return Decoration.none },
+  update(marks: DecorationSet, tr: Transaction) {
+    marks = RangeSet.empty //marks.map(tr.changes)
+    let empty = true
+    tr.effects.forEach((effect) => {
+      if (effect.is(addHighlight)) {
+        marks = marks.update({
+          filter: (from, to, _) => from !== effect.value.from && to !== effect.value.to,
+          add: [highlightMark.range(effect.value.from, effect.value.to)],
+        })
+        empty = false
+      }
+    })
+    return empty ? RangeSet.empty : marks
+  },
+  provide: (field) => EditorView.decorations.from(field),
+})
+```
+
+---
+
+# CodeMirrorEditor
+
+同时暴露对外修改的方法
+
+```ts
+function updateHighlightRange(view: EditorView = data.view as EditorView) {
+  let viewportLines = props.regExpFlags.includes('m') ? view.viewportLineBlocks : [view.viewportLineBlocks[0]]
+
+  const effects: any = []
+  viewportLines.forEach((line) => {
+    let lineObj = view.state.doc.lineAt(line.from)
+
+    try {
+      let matches: RegExpMatchArray[] = props.matchFn(lineObj.text)
+      matches.forEach((match) => {
+        if (match && match[0]) {
+          let startIndex = match.index || 0
+          let endIndex = startIndex + match[0].length
+          effects.push(addHighlight.of({ from: line.from + startIndex, to: line.from + endIndex }))
+        }
+      })
+    } catch (e) {
+      // ignore
+    }
+  })
+  if (!view.state.field(highlightField, false)) {
+    effects.push(StateEffect.appendConfig.of([highlightField]))
+  }
+
+  view.dispatch({ effects })
+}
+```
+
+---
+
+# CodeMirrorEditor
+
+定义并创建编辑器
+
+```ts {all|13|all}
+const startState: EditorState = EditorState.create({
+  doc: props.doc || 'Hello World',
+  extensions: [
+    keymap.of(defaultKeymap),
+    lineNumbers(),
+    highlightActiveLineGutter(),
+    darkTheme,
+    DocSizePlugin,
+    highlightActiveLine(),
+    defaultHighlightStyle,
+    UnderlineKeymapPlugin,
+    EditorView.baseTheme({
+      '.cm-searchMatch': { backgroundColor: 'green' },
+    }),
+    EditorView.updateListener.of((update: ViewUpdate) => {
+      if (update.docChanged) {
+        emit('docChanged', update.state.doc)
+      }
+    }),
+  ],
+})
+```
+
+<!--
+简单的给刚刚的装饰器类设置一个绿色的背景，完成了高亮的功能。
+-->
+
+---
+
+# 项目展示
+
+基本编辑器
+
+<img src="/display/basic.png" class="rounded shadow mx-auto" style="height: 450px"/>
+
+---
+
+# 项目展示
+
+高亮匹配和正则表达式可视化
+
+<img src="/display/page-index_pc.png" class="rounded shadow mx-auto" style="height: 450px"/>
+
+---
+
+# 项目展示
+
+个人主页
+
+<img src="/display/page-profile_pc.png" class="rounded shadow mx-auto" style="height: 450px"/>
+
+---
+
+# 项目展示
+
+仓库
+
+<img src="/display/page-hub_pc.png" class="rounded shadow mx-auto" style="height: 450px"/>
+
+---
+
+# 项目展示
+
+移动端效果
+
+<div class="grid grid-cols-3 gap-1">
+<img src="/display/page-index_mobile.png" class="rounded shadow mx-auto" style="height: 450px"/>
+<img src="/display/page-profile_mobile.png" class="rounded shadow mx-auto" style="height: 450px"/>
+<img src="/display/page-hub_mobile.png" class="rounded shadow mx-auto" style="height: 450px"/>
+</div>
 
 ---
 layout: cover
-
 ---
+# 结束语
 
-# 致谢
+<!--
+本文完成了正则表达式在线可视化存储系统的功能设计。
 
----
+实现了正则表达式可视化，正则表达式随机匹配串生成，用户功能以及正则用例功能。
 
-# Themes
+本次的毕业课程设计采取了全新的技术，学习了在线编码协作平台replit和Chrome开发者工具中所使用的CodeMirror.next代码编辑器，也是使用Vue框架通过GraphQL进行前后端交互的首次尝试。
 
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
-
-<div grid="~ cols-2 gap-2" m="-t-2">
-
-```yaml
----
-theme: default
----
-```
-
-```yaml
----
-theme: seriph
----
-```
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true">
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true">
-
-</div>
-
-Read more about [How to use a theme](https://sli.dev/themes/use.html) and
-check out the [Awesome Themes Gallery](https://sli.dev/themes/gallery.html).
-
----
-
-## preload: false
-
-# Animations
-
-Animations are powered by [@vueuse/motion](https://motion.vueuse.org/).
-
-```html
-<div
-  v-motion
-  :initial="{ x: -80 }"
-  :enter="{ x: 0 }">
-  Slidev
-</div>
-```
-
-<div class="w-60 relative mt-6">
-  <div class="relative w-40 h-40">
-    <img
-      v-motion
-      :initial="{ x: 800, y: -100, scale: 1.5, rotate: -50 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-square.png"
-    />
-    <img
-      v-motion
-      :initial="{ y: 500, x: -100, scale: 2 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-circle.png"
-    />
-    <img
-      v-motion
-      :initial="{ x: 600, y: 400, scale: 2, rotate: 100 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-triangle.png"
-    />
-  </div>
-
-  <div 
-    class="text-5xl absolute top-14 left-40 text-[#2B90B6] -z-1"
-    v-motion
-    :initial="{ x: -80, opacity: 0}"
-    :enter="{ x: 0, opacity: 1, transition: { delay: 2000, duration: 1000 } }">
-    Slidev
-  </div>
-</div>
-
-<!-- vue script setup scripts can be directly used in markdown, and will only affects current page -->
-<script setup lang="ts">
-const final = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scale: 1,
-  transition: {
-    type: 'spring',
-    damping: 10,
-    stiffness: 20,
-    mass: 2
-  }
-}
-</script>
-
-<div
-  v-motion
-  :initial="{ x:35, y: 40, opacity: 0}"
-  :enter="{ y: 0, opacity: 1, transition: { delay: 3500 } }">
-
-[Learn More](https://sli.dev/guide/animations.html#motion)
-
-</div>
-
----
-
-# LaTeX
-
-LaTeX is supported out-of-box powered by [KaTeX](https://katex.org/).
-
-<br>
-
-Inline $\sqrt{3x-1}+(1+x)^2$
-
-Block
-
-$$
-\begin{array}{c}
-
-\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &
-= \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} & = 4 \pi \rho \\
-
-\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} & = \vec{\mathbf{0}} \\
-
-\nabla \cdot \vec{\mathbf{B}} & = 0
-
-\end{array}
-$$
-
-<br>
-
-[Learn more](https://sli.dev/guide/syntax#latex)
-
----
-
-# Diagrams
-
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
-
-<div class="grid grid-cols-2 gap-10 pt-4 -mb-6">
-
-```mermaid {scale: 0.9}
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
-```
-
-```mermaid {theme: 'neutral', scale: 0.8}
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
-
-</div>
-
-[Learn More](https://sli.dev/guide/syntax.html#diagrams)
-
----
-
-layout: center
-class: text-center
-
----
-
-# Learn More
-
-[Documentations](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/showcases.html)
+本设计内容虽然达到预期效果，但实现的程序还存在一些不足之处，如安全性、可扩展性、用户社交功能不完善，界面不够友好等。对于上述问题，可以通过重新设计UI，添加文章分享分析模块等功能来解决。
+-->
