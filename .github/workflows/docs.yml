@@ -13,6 +13,7 @@ jobs:
       - name: Build and Deploy
         uses: JamesIves/github-pages-deploy-action@main
         env:
+          ACCESS_TOKEN: ${{ secrets.REGEX_HUB }}
           BRANCH: master
           FOLDER: docs/dist
           BUILD_SCRIPT: cd docs && npm install && npm run build
