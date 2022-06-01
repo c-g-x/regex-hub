@@ -11,8 +11,8 @@ jobs:
         uses: actions/checkout@master
 
       - name: Build and Deploy
-        uses: JamesIves/github-pages-deploy-action@dev
+        uses: JamesIves/github-pages-deploy-action@main
         env:
-          BRANCH: gh-pages
-          FOLDER: build
+          BRANCH: master
+          FOLDER: docs/dist
           BUILD_SCRIPT: cd docs && npm install && npm run build
