@@ -20,4 +20,4 @@ jobs:
         with:
           build_dir: docs/dist
         env:
-          GITHUB_TOKEN: ${{ secrets.REGEX_HUB }}
+          GITHUB_TOKEN: ${{ secrets.REGEX_HUB_TOKEN }}
