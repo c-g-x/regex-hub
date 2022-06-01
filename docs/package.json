@@ -11,6 +11,7 @@
     "@slidev/theme-seriph": "latest"
   },
   "devDependencies": {
-    "naive-ui": "^2.29.0"
+    "naive-ui": "^2.29.0",
+    "playwright-chromium": "^1.22.2"
   }
 }
